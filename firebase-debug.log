@@ -1,0 +1,57 @@
+[debug] [2018-06-04T06:06:21.799Z] ----------------------------------------------------------------------
+[debug] [2018-06-04T06:06:21.801Z] Command:       /home/rafa/.nvm/versions/node/v7.10.1/bin/node /home/rafa/.nvm/versions/node/v7.10.1/bin/firebase init
+[debug] [2018-06-04T06:06:21.801Z] CLI Version:   3.18.5
+[debug] [2018-06-04T06:06:21.801Z] Platform:      linux
+[debug] [2018-06-04T06:06:21.801Z] Node Version:  v7.10.1
+[debug] [2018-06-04T06:06:21.801Z] Time:          Mon Jun 04 2018 09:06:21 GMT+0300 (IDT)
+[debug] [2018-06-04T06:06:21.801Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-06-04T06:06:21.807Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] [2018-06-04T06:06:21.807Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/rafa/Documents/Application dev/shomerAhadash
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2018-06-04T06:07:37.260Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-06-04T06:07:37.261Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/MkyeRyxXD-HrufmupYYnMl8JxZIgZyitSttiwo8vRkA',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Mon Jun 04 2018 09:07:37 GMT+0300 (IDT)
+[debug] [2018-06-04T06:07:37.860Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-04T06:07:37.910Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+  
+ Mon Jun 04 2018 09:07:37 GMT+0300 (IDT)
+[debug] [2018-06-04T06:07:39.239Z] <<< HTTP RESPONSE 200
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[debug] [2018-06-04T06:20:51.017Z] >>> HTTP REQUEST GET https://www.gstatic.com/firebasejs/releases.json  
+  
+ Mon Jun 04 2018 09:20:51 GMT+0300 (IDT)
+[debug] [2018-06-04T06:21:16.358Z] Error: getaddrinfo EAI_AGAIN www.gstatic.com:443
+    at Object.exports._errnoException (util.js:1050:11)
+    at errnoException (dns.js:33:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:73:26)
+[error] 
+[error] Error: Server Error. getaddrinfo EAI_AGAIN www.gstatic.com:443
