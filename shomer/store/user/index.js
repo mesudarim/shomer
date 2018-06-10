@@ -279,18 +279,43 @@ export default {
       const db = firebase.database()
       let startTime = Date.now()
       let readibleStartTime = payload.readibleStartTime
-      let location = payload.location
+      let startLocation = payload.location
       console.log('payload', payload);
       const newUserOnShift = {
         userName: getters.user.firstName,
         id: getters.user.id,
         readibleStartTime: readibleStartTime,
-        location: location,
+        startLocation: startLocation,
         startTime: startTime
       }
       console.log('newUserOnShift', newUserOnShift)
       db.ref('onShift/' + getters.user.id).set(newUserOnShift)
-    }
+    },
+    endShift ({commit, getters}, payload) {
+      const db = firebase.database()
+      let endTime = Date.now()
+      let readibleEndTime = payload.readibleEndTime
+      let endLocation = payload.location
+      console.log('payload', payload);
+      db.ref('onShift/' + getters.user.id).once('value')
+        .then( data => {
+          let startShiftData = data.val()
+          console.log('[endShift] data =>', startShiftData)
+          const newClosedShift = {
+            userName: getters.user.firstName,
+            id: getters.user.id,
+            readibleEndTime: readibleEndTime,
+            endLocation: endLocation,
+            endTime: endTime,
+            startTime: startShiftData.startTime,
+            startLocation: startShiftData.startLocation,
+            readibleStartTime: startShiftData.readibleStartTime,
+          }
+          db.ref('onShift/' + getters.user.id).remove()
+          console.log('newUserOnShift', newClosedShift)
+          db.ref('users/' + getters.user.id + '/closedShifts/').push(newClosedShift)
+        })
+    },
   },
   getters: {
     user (state) {

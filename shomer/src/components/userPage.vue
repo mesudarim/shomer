@@ -8,11 +8,6 @@
     <v-btn dark class="green" block v-if="loggedOut && !shiftEnded" @click="checkIn">תחילת משמרת</v-btn>
     <v-btn dark class="orange" block v-if="!loggedOut && shiftStarted" @click="checkOut">סיום משמרת</v-btn>
     <v-btn dark class="red" block v-if="shiftEnded" @click="reset">Reset</v-btn></v-btn>
-    <v-layout row>
-        <v-flex xs12 class="text-xs-center">
-          <v-progress-circular indeterminate color="yellow" :width="1" :size="90" v-if="loading" class="mt-5"></v-progress-circular>
-        </v-flex>
-    </v-layout>
     <v-card dark style="height: 88px" v-if="shiftStarted" class="mb-2">
       <p dark class="hebrewText">תחילת משמרת</p>
       <p class="startTime">{{ startTime }}</p>
@@ -21,6 +16,11 @@
       <p dark class="hebrewText">סיום משמרת</p>
       <p class="startTime">{{ endTime }}</p>
     </v-card>
+    <v-layout row>
+        <v-flex xs12 class="text-xs-center">
+          <v-progress-circular indeterminate color="yellow" :width="1" :size="80" v-if="loading" class="mt-5"></v-progress-circular>
+        </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -79,23 +79,21 @@
           this.searchingForLocation = false
           if (sawAlert === false && this.fetchedLocation === {lat: 0, lng: 0}) {
             console.log('should show the alert')
-            alert('Couldn\'t load location, please try mannually')
+            alert('Couldn\'t load location, please try again')
             sawAlert = true
             console.log('[getLocation] this.fetchedLocation in the setTimeout', this.fetchedLocation)
             this.loading = false
           } else {
-
             console.log('[getLocation] this.fetchedLocation in the setTimeout ELSE!!!', this.fetchedLocation)
             this.$store.dispatch('addStartShift', {readibleStartTime: this.startTime, location: this.fetchedLocation})
             this.shiftStarted = true
             this.loading = false
           }
-        }, 7000)
+        }, 5000)
         navigator.geolocation.getCurrentPosition(position => {
           console.log('in navigator.geolocation.getCurrentPosition')
           this.fetchedLocation = {lat: position.coords.latitude, lng: position.coords.longitude}
           console.log('[getLocation] this.fetchedLocation', this.fetchedLocation)
-
           this.lat = position.coords.latitude
           this.lon = position.coords.longitude
           var geocoder = new google.maps.Geocoder()
@@ -123,30 +121,73 @@
           })
           this.searchingForLocation = false
         })
-        // .then( _=> {
-        //   if (!this.fetchedLocation === '{lat: 0, lng: 0}') {
-        //     this.$store.dispatch('addStartShift', {readibleStartTime: this.startTime, location: this.fetchedLocation})
-        //   } else {
-        //     alert('We could not find your location try to click the start button again')
-        //   }
-        // })
-        // err => {
-        //   console.log(err)
-        //   this.searchingForLocation = false
-        //   if (!sawAlert) {
-        //     alert('Couldn\'t load location, please try mannually')
-        //     sawAlert = true
-        //   }
-        //   this.fetchedLocation = {lat: 0, lng: 0}
-        // }
-
-        // ////////////////////////////////////////////////////////////////////////////////////
       },
       checkOut () {
-        this.loggedOut = true
-        this.shiftEnded = true
+        this.loading = true
+
         let d = new Date()
         this.endTime = d.toLocaleTimeString('he')
+
+        // ///////////////// GET LOCATION ////////////////////////////////
+
+        console.log('getLocation')
+        if (!navigator.geolocation) {
+          console.log('no geolocation in browser')
+          return
+        }
+        // console.log('after if navigator');
+        let sawAlert = false
+        // We hide the button and show the spinner
+        this.searchingForLocation = true
+        // console.log('just before navigator.geolocation.getCurrentPosition');
+        setTimeout(_ => {
+          this.searchingForLocation = false
+          if (sawAlert === false && this.fetchedLocation === {lat: 0, lng: 0}) {
+            console.log('should show the alert')
+            alert('Couldn\'t load location, please try again')
+            sawAlert = true
+            console.log('[getLocation] this.fetchedLocation in the setTimeout', this.fetchedLocation)
+            this.loading = false
+          } else {
+            console.log('[getLocation] this.fetchedLocation in the setTimeout ELSE!!!', this.fetchedLocation)
+            this.$store.dispatch('endShift', {readibleEndTime: this.endTime, location: this.fetchedLocation})
+            this.loading = false
+            this.loggedOut = true
+            this.shiftEnded = true
+          }
+        }, 5000)
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log('in navigator.geolocation.getCurrentPosition')
+          this.fetchedLocation = {lat: position.coords.latitude, lng: position.coords.longitude}
+          console.log('[getLocation] this.fetchedLocation', this.fetchedLocation)
+          this.lat = position.coords.latitude
+          this.lon = position.coords.longitude
+          var geocoder = new google.maps.Geocoder()
+          let myPlace = new google.maps.LatLng(this.lat, this.lon)
+          let geopos = `${this.lat},${this.lon}`
+          let latlngStr = geopos.split(',', 2)
+          var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])}
+          console.log('latlng =>', latlng)
+          geocoder.geocode({'location': latlng}, (results, status) => {
+            console.log('results ', results)
+            // this.address = {
+            //   administrative_area_level_1: results[4].address_components["0"].long_name,
+            //   country: results[4].address_components[1].long_name,
+            //   latitude: this.lat,
+            //   longitude: this.lon,
+            //   locality: results["0"].address_components[1].long_name,
+            //   route: results["0"].address_components["0"].long_name,
+            //   street_number: results["0"].address_components["0"].long_name
+            // }
+            this.address = {
+              latitude: this.lat,
+              longitude: this.lon
+            }
+            console.log('[this address nvo object]', this.address)
+          })
+          this.searchingForLocation = false
+        })
+
       },
       reset () {
         this.shiftEnded = false
